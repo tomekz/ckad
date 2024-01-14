@@ -20,7 +20,8 @@ It contains a sandbox environment to practice the exam tasks
 - [x] create a basic pod
 
 create a pod with the name "basic" and the image "nginx"
-- ```kubectl create -f basic.yaml ```
+- ```kubectl create namespace ckad```
+- ```kubectl create -f lab/basic.yaml -n ckad```
 describe the pod
 - ```kubectl describe pod basic ```
 
