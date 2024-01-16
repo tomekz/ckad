@@ -21,9 +21,22 @@ It contains a sandbox environment to practice the exam tasks
 
 create a pod with the name "basic" and the image "nginx"
 - ```kubectl create namespace ckad```
+
 - ```kubectl create -f lab/basic.yaml -n ckad```
+
+or without yaml file:
+
+- ```kubectl run basic --image=nginx --restart=Never -n ckad```
+
 describe the pod
 - ```kubectl describe pod basic ```
+
+shutdown the pod:
+- ```kubectl delete pod basic```
+
+- [x] create a busybox pod that runs the command "env"
+
+- ```kubectl run busybox --image=busybox --restart=Never  -n ckad --command -- env```
 
 ## 2️⃣ - Lists
 
