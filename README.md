@@ -12,14 +12,14 @@ It contains a sandbox environment to practice the exam tasks
 
 # 📚 Exercises
 
-## 1️⃣ - Core concepts
+## 1️⃣ - Core [concepts](concepts)
 
 - [x] deploy a new cluster
 - ```k3d cluster create --agents 2 ckad ```
 
 - [x] create a basic pod
 
-create a pod with the name "basic" and the image "nginx"
+create a pod with the name "basic" [and](and) the image "nginx"
 - ```kubectl create namespace ckad```
 
 - ```kubectl create -f lab/basic.yaml -n ckad```
@@ -36,6 +36,9 @@ enable port forwarding to access the pod. Listen on port 8080 on the host and fo
 
 shutdown the pod:
 - ```kubectl delete pod basic```
+
+crate new service for the pod
+- ```kubectl create -f lab/basic_svc.yaml -n ckad```
 
 - [x] create a busybox pod that runs the command "env"
 
