@@ -31,6 +31,9 @@ or without yaml file:
 describe the pod
 - ```kubectl describe pod basic ```
 
+enable port forwarding to access the pod. Listen on port 8080 on the host and forward to port 80 in the pod
+- ```kubectl port-forward basic 8080:80 ```
+
 shutdown the pod:
 - ```kubectl delete pod basic```
 
