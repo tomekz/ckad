@@ -45,11 +45,24 @@ shutdown the pod:
 create new service for the pod
 - [x] ```[kubectl](kubectl) create -f lab/basic_svc.yaml -n ckad```
 
-- [x] create a busybox pod that runs the command "env"
-- ```kubectl run busybox --image=busybox --restart=Never  -n ckad --command -- env```
+create a busybox pod that runs the command "env"
+- [x] ```kubectl run busybox --image=busybox --restart=Never  -n ckad --command -- env```
 
-- Get the YAML for a new namespace called 'myns' without creating it
+Get the YAML for a new namespace called 'myns' without creating it
 - [x] ```kubectl create namespace ckad -o yaml --dry-run=client```
+
+Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod
+- [x] ```kubectl run nginx --image=nginx --restart=Never --env=var1=val1
+    # then
+    kubectl exec -it nginx -- env
+    # or
+    kubectl exec -it nginx -- sh -c 'echo $var1'
+    # or
+    kubectl describe po nginx | grep val1
+    # or
+    kubectl run nginx --restart=Never --image=nginx --env=var1=val1 -it --rm -- env
+    # or
+    kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -c 'echo $var1' ``` 
 
 ### Multi container pods
 
@@ -57,9 +70,15 @@ create a multi-container pod with nginx and fluentd sidecar container
 
 - [x] ```kubectl create -f lab/multi_container.yaml -n ckad```
 
+Create a pod with an nginx container exposed on port 80. Add a busybox init container which downloads a page using "wget -O /work-dir/index.html http://neverssl.com/online". Make a volume of type emptyDir and mount it in both containers to share the downloaded `index.html` file. For the nginx container, mount it on "/usr/share/nginx/html" and for the initcontainer, mount it on "/work-dir". When done, get the IP of the created pod and create a busybox pod and run "wget -O- IP"
+
+- [x] ```kubectl create -f lab/multi_container_init_container.yaml -n ckad```
+
+then start port forwarding to access the nginx index page on http://localhost:8080 : `kubectl port-forward multi-container 8080:80`
+
 ### Create a deployment
 
 
-## 2️⃣ - Lists
+## 2️⃣ - Build
 
 - [ ] task 3
