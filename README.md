@@ -76,7 +76,49 @@ Create a pod with an nginx container exposed on port 80. Add a busybox init cont
 
 then start port forwarding to access the nginx index page on http://localhost:8080 : `kubectl port-forward multi-container 8080:80`
 
-### Create a deployment
+### Labels and annotations
+
+create a pod nginx with the labels "tier=frontend" and "app=v1"
+
+- [x] ```kubectl run nginx --image=nginx --labels=app=v1,tier=frontend```
+
+to get the labels of the pod:
+
+- [x] ```kubectl get pod nginx --show-labels```
+
+get only pods with the label "tier=frontend"
+
+- [x] ```kubectl get pod -l tier=frontend```
+
+add annotation "description='my description'" to the pod
+
+- [x] ```kubectl annotate pod nginx description='my description'```
+
+### Pod placement
+
+Create a pod that will be deployed to a Node that has the label 'tier=frontend'
+
+Add the label to a node:
+
+```bash
+kubectl label nodes <your-node-name> tier=frontend
+kubectl get nodes --show-labels
+```
+
+We can use the 'nodeSelector' property on the Pod YAML:
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cuda-test
+spec:
+  containers:
+    - name: cuda-test
+      image: "k8s.gcr.io/cuda-vector-add:v0.1"
+  nodeSelector: # add this
+    tier:frontend # the selection label
+```
 
 
 ## 2️⃣ - Build
