@@ -17,7 +17,7 @@ It contains a sandbox environment to practice the exam tasks
 ### Create a basic pod
 
 - [x] deploy a new cluster
-- ```k3d cluster create --agents 2 ckad ```
+- ```k3d cluster create --registry-create ckad-registry --agents 2 ckad```
 
 - [x] create a basic pod
 
@@ -123,4 +123,10 @@ spec:
 
 ## 2️⃣ - Build
 
-- [ ] task 3
+Build a simple app and containerize it. Push it to a registry and deploy it to a cluster
+- [x] create a simple app docker image `docker build -t simpleapp .`
+- [x] make note of the k3d registry container port: `docker ps -f name=ckad-registry`
+- [x] push the image to the registry:
+- `docker tag simpleapp:latest localhost:<registry-port>/simpleapp:latest`
+- `docker push localhost:<registry-port>/simpleapp:latest`
+- [x] create a deployment for the app: `kubectl create -f lab/simple_app.yaml -n ckad`
