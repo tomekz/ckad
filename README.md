@@ -123,10 +123,52 @@ spec:
 
 ## 2️⃣ - Build
 
+### Build an image from a Dockerfile and push it to a registry
+
 Build a simple app and containerize it. Push it to a registry and deploy it to a cluster
 - [x] create a simple app docker image `docker build -t simpleapp .`
 - [x] make note of the k3d registry container port: `docker ps -f name=ckad-registry`
 - [x] push the image to the registry:
 - `docker tag simpleapp:latest localhost:<registry-port>/simpleapp:latest`
 - `docker push localhost:<registry-port>/simpleapp:latest`
-- [x] create a deployment for the app: `kubectl create -f lab/simple_app.yaml -n ckad`
+- [x] create a deployment for the app: `kubectl create -f lab/simpleapp.yaml -n ckad`
+
+### Configure liveness and readiness probes
+
+- [x] alter the simpleapp deployment to add a readiness probe that checks for the /tmp/healthy file
+```YAML
+    spec:
+      containers:
+      - name: simple-app
+        image: ckad-registry:51223/simpleapp:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          periodSeconds: 5
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+```
+
+- [x] alter the simpleapp deployment to add a liveness probe to know how long the pod stays healthy. The probe tests for port 8080 of the sidecar cotainer 
+```YAML
+    spec:
+      containers:
+      - name: simple-app
+        image: ckad-registry:51223/simpleapp:latest
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          periodSeconds: 5
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+        livenessProbe:
+          periodSeconds: 5
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+```

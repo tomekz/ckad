@@ -15,7 +15,22 @@ spec:
         app: simple-app
     spec:
       containers:
+      - name: goproxy
+        image: registry.k8s.io/goproxy:0.1
+        ports: 
+        - containerPort: 8080
       - name: simple-app
         image: ckad-registry:51223/simpleapp:latest
         ports:
         - containerPort: 80
+        readinessProbe:
+          periodSeconds: 5
+          exec:
+            command:
+              - cat
+              - /tmp/healthy
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
