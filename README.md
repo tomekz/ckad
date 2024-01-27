@@ -12,7 +12,7 @@ It contains a sandbox environment to practice the exam tasks
 
 # 📚 Exercises
 
-## 1️⃣ - Core [concepts](concepts)
+[##](##) 1️⃣ - Core [concepts](concepts)
 
 ### Create a basic pod
 
@@ -172,3 +172,9 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
               - cat
               - /tmp/healthy
 ```
+
+### Jobs
+
+- [x] create a job that runs a container that sleeps for 3 second than exits
+
+```kubectl create -f lab/simple_job.yaml -n ckad```
