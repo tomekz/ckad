@@ -205,4 +205,7 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
             cpu: 200m
             memory: 100Mi
 ```
+- [x] get pod cpu and memory usage
+
+```kubectl top pod simpleapp-xxxx```
 
