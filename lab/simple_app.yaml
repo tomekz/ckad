@@ -23,6 +23,10 @@ spec:
         image: ckad-registry:51223/simpleapp:latest
         ports:
         - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
         readinessProbe:
           periodSeconds: 5
           exec:

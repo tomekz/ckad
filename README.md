@@ -178,3 +178,31 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - [x] create a job that runs a container that sleeps for 3 second than exits
 
 ```kubectl create -f lab/simple_job.yaml -n ckad```
+
+### Using labels
+
+- [x] use the -l option to get pods with the label "tier=frontend"
+
+```kubectl get pods -l tier=frontend```
+
+- [x] edit the pod label to "tier=backend"
+
+```kubectl edit pod simple-job-xxxx```
+
+### setting resource limits
+
+- [x] set the resource limits for the simpleapp deployment to 200m CPU and 100Mi memory
+
+```YAML
+    spec:
+      containers:
+      - name: simple-app
+        image: ckad-registry:51223/simpleapp:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+```
+
