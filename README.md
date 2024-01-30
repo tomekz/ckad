@@ -12,7 +12,7 @@ It contains a sandbox environment to practice the exam tasks
 
 # 📚 Exercises
 
-[##](##) 1️⃣ - Core [concepts](concepts)
+## 1️⃣ - Core concepts
 
 ### Create a basic pod
 
@@ -64,7 +64,7 @@ Create an nginx pod and set an env value as 'var1=val1'. Check the env value exi
     # or
     kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -c 'echo $var1' ``` 
 
-### Multi container pods
+## 2️⃣  Multi container pods
 
 create a multi-container pod with nginx and fluentd sidecar container
 
@@ -76,6 +76,45 @@ Create a pod with an nginx container exposed on port 80. Add a busybox init cont
 
 then start port forwarding to access the nginx index page on http://localhost:8080 : `kubectl port-forward multi-container 8080:80`
 
+## 3️⃣  Pod design
+
+###  deployments
+
+Create a deployment with image nginx:1.18.0, called nginx, having 2 replicas, defining port 80 as the port that this container exposes (don't create a service for this deployment)
+
+- [x]
+ ```
+kubectl create deployment nginx  --image=nginx:1.18.0  --dry-run=client -o yaml > deploy.yaml
+vi deploy.yaml
+# change the replicas field from 1 to 2
+# add this section to the container spec and save the deploy.yaml file
+# ports:
+#   - containerPort: 80
+kubectl apply -f deploy.yaml
+```
+
+or 
+
+```
+kubectl create deploy nginx --image=nginx:1.18.0 --replicas=2 --port=80
+```
+
+get deploymet rollout status
+
+- [x] ```kubectl rollout status deployment nginx```
+
+view yaml of the replicaset for the deployment
+
+- [x] ```kubectl get rs```
+
+get the rollout history of the deployment
+
+- [x] ```kubectl rollout history deployment nginx```
+
+undo the last deployment and verify that the rollout history is updated
+
+- [x] ```kubectl rollout undo deployment nginx```
+ 
 ### Labels and annotations
 
 create a pod nginx with the labels "tier=frontend" and "app=v1"
@@ -120,8 +159,7 @@ spec:
     tier:frontend # the selection label
 ```
 
-
-## 2️⃣ - Build
+## 4️⃣ - Configuration
 
 ### Build an image from a Dockerfile and push it to a registry
 
@@ -208,4 +246,10 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - [x] get pod cpu and memory usage
 
 ```kubectl top pod simpleapp-xxxx```
+
+### custom resource definitions
+
+- [x] view CRDs currently in cluster
+
+```kubectl get crd```
 
