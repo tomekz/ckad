@@ -260,6 +260,18 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
               - /tmp/healthy
 ```
 
+### debugging
+
+Create a busybox pod that runs 'ls /notexist'. Determine if there's an error (of course there is), see it. In the end, delete the pod
+
+- [x] ```kubectl run busybox --image=busybox --restart=Never -- ls /notexist```
+
+```
+kubectl logs busybox
+kubectl describe pod busybox
+kubectl get events | grep -i error
+```
+
 ## 6️⃣ - Services and networking
 
 ## 7️⃣ - State persistence
