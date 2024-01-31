@@ -159,6 +159,52 @@ spec:
     tier:frontend # the selection label
 ```
 
+### Jobs
+
+- [x] create a job that runs a container that sleeps for 3 second than exits
+
+```kubectl create -f lab/simple_job.yaml -n ckad```
+
+### Using labels
+
+- [x] use the -l option to get pods with the label "tier=frontend"
+
+```kubectl get pods -l tier=frontend```
+
+- [x] edit the pod label to "tier=backend"
+
+```kubectl edit pod simple-job-xxxx```
+
+### setting resource limits
+
+- [x] set the resource limits for the simpleapp deployment to 200m CPU and 100Mi memory
+
+```YAML
+    spec:
+      containers:
+      - name: simple-app
+        image: ckad-registry:51223/simpleapp:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+            memory: 100Mi
+```
+- [x] get pod cpu and memory usage
+
+```sh
+kubectl top pod simpleapp-xxxx
+```
+
+### custom resource definitions
+
+- [x] view CRDs currently in cluster
+
+```sh
+kubectl get crd
+```
+
 ## 4️⃣ - Configuration
 
 ### Build an image from a Dockerfile and push it to a registry
@@ -171,9 +217,12 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - `docker push localhost:<registry-port>/simpleapp:latest`
 - [x] create a deployment for the app: `kubectl create -f lab/simpleapp.yaml -n ckad`
 
+## 5️⃣ - Observability
+
 ### Configure liveness and readiness probes
 
 - [x] alter the simpleapp deployment to add a readiness probe that checks for the /tmp/healthy file
+
 ```YAML
     spec:
       containers:
@@ -211,45 +260,9 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
               - /tmp/healthy
 ```
 
-### Jobs
+## 6️⃣ - Services and networking
 
-- [x] create a job that runs a container that sleeps for 3 second than exits
+## 7️⃣ - State persistence
 
-```kubectl create -f lab/simple_job.yaml -n ckad```
-
-### Using labels
-
-- [x] use the -l option to get pods with the label "tier=frontend"
-
-```kubectl get pods -l tier=frontend```
-
-- [x] edit the pod label to "tier=backend"
-
-```kubectl edit pod simple-job-xxxx```
-
-### setting resource limits
-
-- [x] set the resource limits for the simpleapp deployment to 200m CPU and 100Mi memory
-
-```YAML
-    spec:
-      containers:
-      - name: simple-app
-        image: ckad-registry:51223/simpleapp:latest
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            cpu: 200m
-            memory: 100Mi
-```
-- [x] get pod cpu and memory usage
-
-```kubectl top pod simpleapp-xxxx```
-
-### custom resource definitions
-
-- [x] view CRDs currently in cluster
-
-```kubectl get crd```
+## 8️⃣ - helm & custom resource definitions
 
