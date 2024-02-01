@@ -52,7 +52,9 @@ Get the YAML for a new namespace called 'myns' without creating it
 - [x] ```kubectl create namespace ckad -o yaml --dry-run=client```
 
 Create an nginx pod and set an env value as 'var1=val1'. Check the env value existence within the pod
-- [x] ```kubectl run nginx --image=nginx --restart=Never --env=var1=val1
+- [x] 
+```
+    kubectl run nginx --image=nginx --restart=Never --env=var1=val1
     # then
     kubectl exec -it nginx -- env
     # or
@@ -62,7 +64,8 @@ Create an nginx pod and set an env value as 'var1=val1'. Check the env value exi
     # or
     kubectl run nginx --restart=Never --image=nginx --env=var1=val1 -it --rm -- env
     # or
-    kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -c 'echo $var1' ``` 
+    kubectl run nginx --image nginx --restart=Never --env=var1=val1 -it --rm -- sh -c 'echo $var1' 
+ ``` 
 
 ## 2️⃣  Multi container pods
 
@@ -217,6 +220,83 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - `docker push localhost:<registry-port>/simpleapp:latest`
 - [x] create a deployment for the app: `kubectl create -f lab/simpleapp.yaml -n ckad`
 
+### configmaps
+
+- [x] create a configmap called "myconfig" with the key "mykey" and value "myvalue"
+
+```
+kubectl create configmap myconfig --from-literal=mykey=myvalue
+```
+
+- [x] Create and display a configmap from a file
+```
+#crate file
+echo -e "key1=value1\nkey2=value2" > myconfig.txt
+# create configmaps from file
+kubectl create configmap myconfig --from-file=myconfig.txt
+```
+
+- [x] create a pod that uses the configmap as an environment variable
+
+```YAML
+spec:
+    containers:
+    - name: simple-app
+        image: ckad-registry:51223/simpleapp:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: mycofnig
+          valueFrom:
+            configMapKeyRef:
+              name: mycofnig
+              key: mykey
+ ```
+ 
+ Create a configMap 'cmvolume' with values 'var8=val8', 'var9=val9'. Load this as a volume inside an nginx pod on path '/etc/lala'. Create the pod and 'ls' into the '/etc/lala' directory.
+ 
+ - [x]
+ 
+ ```
+ kubectl create configmap cmvolume --from-literal=var8=val8 --from-literal=var9=val9
+ kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
+ vim pod.yaml
+```
+
+```YAML
+ apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  volumes: # add a volumes list
+  - name: myvolume # just a name, you'll reference this in the pods
+    configMap:
+      name: cmvolume # name of your configmap
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    resources: {}
+    volumeMounts: # your volume mounts are listed here
+    - name: myvolume # the name that you specified in pod.spec.volumes.name
+      mountPath: /etc/lala # the path inside your container
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+```
+
+```
+kubectl create -f pod.yaml
+kubectl exec -it nginx -- /bin/sh
+cd /etc/lala
+ls # will show var8 var9
+cat var8 # will show val8
+ ```
+
 ## 5️⃣ - Observability
 
 ### Configure liveness and readiness probes
@@ -275,6 +355,8 @@ kubectl get events | grep -i error
 ## 6️⃣ - Services and networking
 
 ## 7️⃣ - State persistence
+
+
 
 ## 8️⃣ - helm & custom resource definitions
 
