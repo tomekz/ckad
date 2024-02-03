@@ -356,6 +356,115 @@ kubectl get events | grep -i error
 
 ## 7️⃣ - State persistence
 
+Create busybox pod with two containers, each one will have the image busybox and will run the 'sleep 3600' command. Make both containers mount an emptyDir at '/etc/foo'. Connect to the second busybox, write the first column of '/etc/passwd' file to '/etc/foo/passwd'. Connect to the first busybox and write '/etc/foo/passwd' file to standard output. Delete pod.
+
+- [x] 
+create template file for the pod
+```kubectl run busybox --image=busybox --restart=Never -o yaml --dry-run=client -- /bin/sh -c 'sleep 3600' > pod.yaml ```
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources: {}
+    volumeMounts: #
+    - name: myvolume #
+      mountPath: /etc/foo #
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    name: busybox2
+    volumeMounts: #
+    - name: myvolume #
+      mountPath: /etc/foo #
+  volumes: #
+  - name: myvolume #
+    emptyDir: {} #
+```yaml
+
+Create a PersistentVolume of 10Gi, called 'myvolume'. Make it have accessMode of 'ReadWriteOnce' and 'ReadWriteMany', storageClassName 'normal', mounted on hostPath '/etc/foo'. Save it on pv.yaml, add it to the cluster. Show the PersistentVolumes that exist on the cluster
+
+- [x] 
+```YAML
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: myvolume
+spec:
+  storageClassName: normal
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+    - ReadWriteMany
+  hostPath:
+    path: /etc/foo
+```
+Create a busybox pod with command 'sleep 3600', save it on pod.yaml. Mount the PersistentVolumeClaim to '/etc/foo'. Connect to the 'busybox' pod, and copy the '/etc/passwd' file to '/etc/foo/passwd
+
+- [x] 
+  
+```yaml
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mypvc
+spec:
+  storageClassName: normal
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5M
+```  
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: busybox
+  name: busybox
+spec:
+  containers:
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    name: busybox
+    resources: {}
+    volumeMounts: #
+    - name: myvolume #
+      mountPath: /etc/foo #
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+  volumes: #
+  - name: myvolume #
+    persistentVolumeClaim: #
+      claimName: mypvc #
+status: {}
+```
+
 
 
 ## 8️⃣ - helm & custom resource definitions

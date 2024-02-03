@@ -3,20 +3,26 @@ kind: Pod
 metadata:
   creationTimestamp: null
   labels:
-    run: nginx
-  name: nginx
+    run: busybox
+  name: busybox
 spec:
-  volumes:
-  - name: myvol
-    configMap:
-      name: cmvolume
   containers:
-  - image: nginx
-    name: nginx
+  - args:
+    - /bin/sh
+    - -c
+    - sleep 3600
+    image: busybox
+    imagePullPolicy: IfNotPresent
+    name: busybox
     resources: {}
-    volumeMounts:
-    - name: myvol
-      mountPath: /etc/lala
+    volumeMounts: #
+    - name: myvolume #
+      mountPath: /etc/foo #
   dnsPolicy: ClusterFirst
   restartPolicy: Never
+  volumes: #
+  - name: myvolume #
+    persistentVolumeClaim: #
+      claimName: mypvc #
 status: {}
+
