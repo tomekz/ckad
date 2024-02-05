@@ -358,6 +358,65 @@ accessing an application with a service
 
 `kubectl expose deployment/nginx --port=80 --type=NodePort`
 
+create a pod with image nginx and expose it on port 80
+
+`kubectl run nginx --image=nginx --restart=Never --port=80 --expose` // this creates a service as well
+
+confirm that the clusterIP has been created, also check the endpoints
+
+```YAML
+kubectl get svc nginx # services
+kubectl get ep # endpoints
+```
+
+Convert the ClusterIP to NodePort for the same service and find the NodePort port. Hit service using Node's IP. Delete the service and the pod at the end.
+
+```
+kubectl edit svc nginx
+# change the type from ClusterIP to NodePort
+```
+
+Create a deployment called foo using image 'simpleapp' and 3 replicas. Label it as 'app=foo'. Declare that containers in this pod will accept traffic on port 8080 (do NOT create a service yet)
+
+```
+kubectl create deployment foo --image=ckad-registry:51223/simpleapp:latest --replicas=3 --port=8080
+```
+
+Create a service that exposes the deployment on port 6262. Verify its existence, check the endpoints
+
+```
+kubectl expose deployment foo --port=6262 --target-port=8080 --type=ClusterIP
+```
+Create an nginx deployment of 2 replicas, expose it via a ClusterIP service on port 80. Create a NetworkPolicy so that only pods with labels 'access: granted' can access the deployment and apply it
+
+
+``` 
+kubectl create deployment nginx --image=nginx --replicas=2
+kubectl expose deployment nginx --port=80
+
+kubectl describe svc nginx # see the 'app=nginx' selector for the pods
+# or
+kubectl get svc nginx -o yaml
+
+vi policy.yaml
+```
+
+```yaml
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: access-nginx # pick a name
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx # selector for the pods
+  ingress: # allow ingress traffic
+  - from:
+    - podSelector: # from pods
+        matchLabels: # with this label
+          access: granted
+```
+
 
 ## 7️⃣ - State persistence
 
