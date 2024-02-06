@@ -3,26 +3,24 @@ kind: Pod
 metadata:
   creationTimestamp: null
   labels:
-    run: busybox
-  name: busybox
+    run: nginx
+  name: nginx
 spec:
+  securityContext:
+    runAsUser: 1001
   containers:
-  - args:
-    - /bin/sh
-    - -c
-    - sleep 3600
-    image: busybox
-    imagePullPolicy: IfNotPresent
-    name: busybox
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
     resources: {}
-    volumeMounts: #
-    - name: myvolume #
-      mountPath: /etc/foo #
+    volumeMounts:
+    - name: my-secret
+      mountPath: /etc/foo
   dnsPolicy: ClusterFirst
   restartPolicy: Never
-  volumes: #
-  - name: myvolume #
-    persistentVolumeClaim: #
-      claimName: mypvc #
+  volumes:
+  - name: my-secret
+    secret:
+      secretName: my-secret
 status: {}
-

@@ -220,6 +220,32 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - `docker push localhost:<registry-port>/simpleapp:latest`
 - [x] create a deployment for the app: `kubectl create -f lab/simpleapp.yaml -n ckad`
 
+### Security context
+
+- [x] create a pod that runs as a user with UID 1000
+
+```YAML
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  securityContext:
+    runAsUser: 1001
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+```
+
 ### configmaps
 
 - [x] create a configmap called "myconfig" with the key "mykey" and value "myvalue"
@@ -296,6 +322,44 @@ cd /etc/lala
 ls # will show var8 var9
 cat var8 # will show val8
  ```
+ 
+### Secrets
+
+Create an nginx pod that mounts the secret my-secret in a volume on path /etc/foo
+```sh
+
+# create a secret
+  kubectl create secret generic my-secret --from-literal=key1=supersecret --from-literal=key2=topsecret
+```
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  securityContext:
+    runAsUser: 1001
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    resources: {}
+    volumeMounts:
+    - name: my-secret
+      mountPath: /etc/foo
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+  volumes:
+  - name: my-secret
+    secret:
+      secretName: my-secret
+status: {}
+```
 
 ## 5️⃣ - Observability
 
