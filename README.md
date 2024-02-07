@@ -21,7 +21,7 @@ It contains a sandbox environment to practice the exam tasks
 
 - [x] create a basic pod
 
-create a pod with the name "basic" [and](and) the image "nginx"
+create a pod with the name "basic" and the image "nginx"
 - [x] ```kubectl create namespace ckad```
 
 - [x] ```kubectl create -f lab/basic.yaml -n ckad```
@@ -375,9 +375,50 @@ Build a simple app and containerize it. Push it to a registry and deploy it to a
 - `docker push localhost:<registry-port>/simpleapp:latest`
 - [x] create a deployment for the app: `kubectl create -f lab/simpleapp.yaml -n ckad`
 
-### authentication, authorization and admission control
+### service accounts
 
-TBD
+- [x] create a service account called "myuser"
+
+```sh
+kubectl create sa myuser
+```
+
+- [x] see all the service account in the cluster
+
+```sh
+kubectl get sa --all-namespaces
+```
+
+Create an nginx pod that uses 'myuser' as a service account
+
+```
+kubectl run nginx --image=nginx --restart=Never -o yaml --dry-run=client > pod.yaml
+vi pod.yaml
+```
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  serviceAccountName: myuser # we use pod.spec.serviceAccountName
+  containers:
+  - image: nginx
+    imagePullPolicy: IfNotPresent
+    name: nginx
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
+```
+Generate an API token for the service account 'myuser'
+
+```sh
+kubectl create token myuser
+```
 
 ### Security context
 
@@ -757,6 +798,9 @@ status: {}
 ```
 
 
-
 ## 8️⃣ - helm & custom resource definitions
+
+creating a basic helm chart
+
+TBD
 

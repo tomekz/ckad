@@ -6,21 +6,11 @@ metadata:
     run: nginx
   name: nginx
 spec:
-  securityContext:
-    runAsUser: 1001
+  serviceAccount: myuser
   containers:
   - image: nginx
     name: nginx
-    ports:
-    - containerPort: 80
     resources: {}
-    volumeMounts:
-    - name: my-secret
-      mountPath: /etc/foo
   dnsPolicy: ClusterFirst
   restartPolicy: Never
-  volumes:
-  - name: my-secret
-    secret:
-      secretName: my-secret
 status: {}
