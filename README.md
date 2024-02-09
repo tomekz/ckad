@@ -800,7 +800,17 @@ status: {}
 
 ## 8️⃣ - helm & custom resource definitions
 
-creating a basic helm chart
+install a new release, with a customised values setting. For this we first list all possible value settings for the chart, we can do this via
 
-TBD
+```sh
+
+helm show values stable/nginx-ingress
+```
+
+Then we can install the chart with a custom value setting
+
+```sh
+helm install my-release stable/nginx-ingress --set controller.service.loadBalancerIP=""
+```
+
 
