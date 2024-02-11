@@ -683,8 +683,33 @@ spec:
 
 ### Ingress rules
 
-TBD
+Create an nginx deployment of 2 replicas, expose it via a ClusterIP service on port 80. Create a NetworkPolicy so that only pods with labels 'access: granted' can access the deployment and apply it
 
+```
+kubectl create deployment my-deployment-v1 --image=nginx --replicas=2 --port=80
+
+# expose the deployment
+kubectl expose deployment my-deployment-v1 --port=80
+
+# create a network policy
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: network-policy
+spec:
+  podSelector:
+    matchLabels:
+      app: db
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          access: granted
+
+```
 
 ## 7️⃣ - State persistence
 
