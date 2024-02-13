@@ -16,6 +16,10 @@ It contains a sandbox environment to practice the exam tasks
 
 ### Create a basic pod
 
+- [x] create short lived test pod and run echo "hello from the test pod" and then exit
+
+- ```kubectl run test-box --image=busybox --restart=Never -it --rm -- /bin/sh -c 'echo "hello from the test pod"'```
+
 - [x] deploy a new cluster
 - ```k3d cluster create --registry-create ckad-registry --agents 2 ckad```
 
