@@ -124,9 +124,19 @@ undo the last deployment and verify that the rollout history is updated
 
 ### deployments strategies, rolling update and canary
 
+Implement blue-green deployment:
+- blue/green: create a depl called `blue` with pods with label `app=blue` Then create a depl called `green` with pods with label `app=green`. 
+  ```
+    nginx-deployment-849d756fcb-wdgp9         1/1     Running   0          2m9s   app=nginx,pod-template-hash=849d756fcb,role=blue
+    nginx-deployment-849d756fcb-298fp         1/1     Running   0          2m9s   app=nginx,pod-template-hash=849d756fcb,role=blue
+    nginx-deployment-849d756fcb-tl7gp         1/1     Running   0          2m9s   app=nginx,pod-template-hash=849d756fcb,role=blue
+    nginx-deployment-green-65f9b4fb79-l9qvc   1/1     Running   0          15s    app=nginx,pod-template-hash=65f9b4fb79,role=green
+    nginx-deployment-green-65f9b4fb79-xjbwm   1/1     Running   0          15s    app=nginx,pod-template-hash=65f9b4fb79,role=green
+    nginx-deployment-green-65f9b4fb79-xzwk2   1/1     Running   0          15s    app=nginx,pod-template-hash=65f9b4fb79,role=green
+  ```
+- Then create a service that points to the `blue` depl. Then update the service to point to the `green` deployment: `kubectl expose deployment nginx-deployment-green` and update the labels to match the green pods
 
 Implement canary deployment by running two instances of nginx marked as version=v1 and version=v2 so that the load is balanced at 75%-25% ratio
-
 
 crate a yaml for deployment with 3 replicas
 

@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: nginx-deployment-green
   labels:
     app: nginx
-    role: blue
+    role: green
 spec:
   replicas: 3
   selector:
@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: nginx
-        role: blue
+        role: green
     spec:
       containers:
       - name: nginx
